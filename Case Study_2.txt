@@ -1,0 +1,90 @@
+Case Study 2: Library Management System
+
+      Scenario:      
+You are tasked with creating a database to manage a library's inventory, members, and borrowing records. 
+
+      Tasks:      
+1.       Create the Database:      
+   - Name the database `LibraryDB`.
+
+
+2.       Create Tables:      
+   -       Books Table:      
+     - `id`: INT, Primary Key, Auto Increment
+     - `title`: VARCHAR(100), Not Null
+     - `author`: VARCHAR(50), Not Null
+     - `published_year`: YEAR, Not Null
+     - `genre`: VARCHAR(30)
+
+Create table books(id int auto_increment primary key,title varchar(100) not null,author varchar(50) not null,published_year year not null,genre varchar(30));
+
+   -       Members Table:      
+     - `id`: INT, Primary Key, Auto Increment
+     - `name`: VARCHAR(50), Not Null
+     - `membership_date`: DATE, Not Null
+
+Create table members(id int auto_increment primary key,name varchar(50),membership_date date not null);
+
+   -       Borrowing Table:      
+     - `id`: INT, Primary Key, Auto Increment
+     - `book_id`: INT, Foreign Key References `Books(id)`
+     - `member_id`: INT, Foreign Key References `Members(id)`
+     - `borrow_date`: DATE, Not Null
+     - `return_date`: DATE
+
+
+Create table borrowing(id int auto_increment primary key,book_id int,foreign key(book_id) references books(id),member_id int,foreign key(member_id) references members(id),borrow_date date not null,return_date date);
+
+3.       Insert Sample Data.  
+
+
+insert into books (id,title, author, published_year, genre) values
+    (1111,'The God of Small Things', 'Arundhati Roy', 1997, 'Fiction')
+    (1112,'Midnight\'s Children', 'Salman Rushdie', 1981, 'Historical Fiction'),
+    (1113,'Train to Pakistan', 'Khushwant Singh', 1956, 'Historical Fiction'),
+    (1114,'The White Tiger', 'Aravind Adiga', 2008, 'Fiction'),
+    (1115,'Gitanjali', 'Rabindranath Tagore', 1910, 'Poetry'),
+    (1116,'Interpreter of Maladies', 'Jhumpa Lahiri', 1999, 'Short Stories'),
+    (1117,'A Suitable Boy', 'Vikram Seth', 1993, 'Fiction'),
+    (1118,'The Palace of Illusions', 'Chitra Banerjee Divakaruni', 2008, 'Mythology'),
+    (1119,'Swami and Friends', 'R.K. Narayan', 1935, 'Fiction'),
+    (1120,'Malgudi Days', 'R.K. Narayan', 1943, 'Short Stories');
+
+
+    
+Insert into members (name, membership_date) values
+    ('Arjun', '2025-01-01'),
+    ('Priya', '2025-01-10'),
+    ('Rahul', '2025-01-15'),
+    ('Neha', '2025-01-20'),
+    ('Amit', '2025-01-25');
+
+
+INSERT INTO borrowing (book_id, member_id, borrow_date, return_date) 
+VALUES(1111,5004,'2025-02-12','2025-03-19'),
+    (1112, 5000, '2025-02-14', '2025-03-21'),
+    (1115, 5001, '2025-02-15', '2025-03-22'),
+    (1118, 5002, '2025-02-16', '2025-03-23'),
+    (1120, 5003, '2025-02-17', '2025-03-24');
+
+
+4.       Queries:      
+   - List all books.
+
+Select * from books;
+
+   - List all members.
+
+Select * from members;
+
+   - Show borrowing records with member names and book titles.
+
+
+
+Select m.name,b.title,bo.* from borrowing bo join members m on m.id=bo.member_id join books b on b.id=bo.book_id;
+
+
+   - Count the number of books borrowed by each member.
+
+
+Select bo.member_id,m.name,count(bo.book_id) as no_of_books from borrowing bo join members m on bo.member_id=m.id group by bo.member_id;
