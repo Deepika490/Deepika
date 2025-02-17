@@ -1,0 +1,203 @@
+Case Study 1
+#Employee Management System
+
+/* Scenario:
+You have been hired as a database administrator for a new company, 
+and you need to create an Employee Management System to keep track of the employees, 
+their departments, projects they are working on, and their attendance. */
+
+
+Task List:
+
+1.   Create the Database:  
+   - Name the database `EmployeeManagement`.
+
+create database EmployeeManagement1;
+
+use EmployeeManagement1;
+
+
+Create Tables:  
+   -   Departments Table:  
+     - `id`: INT, Primary Key, Auto Increment
+     - `name`: VARCHAR(50), Not Null
+
+create table departments(id int auto_increment primary key,name varchar(50) not null);
+
+
+Employees Table:  
+     - `id`: INT, Primary Key, Auto Increment
+     - `name`: VARCHAR(50), Not Null
+     - `age`: INT, Not Null
+     - `gender`: VARCHAR(10), Not Null
+     - `salary`: INT, Not Null, Check Salary > 30000
+     - `department_id`: INT, Foreign Key References `Departments(id)`
+
+Create table employees(id int auto_increment primary key,
+name varchar(50) not null,age int not null,gender varchar(10) not null,salary int not null check(salary>30000),
+department_id int,foreign key(department_id) references departments(id));
+
+
+
+Projects Table:  
+     - `id`: INT, Primary Key, Auto Increment
+     - `name`: VARCHAR(50), Not Null
+     - `budget`: INT, Not Null, Check Budget > 10000
+
+
+Create table projects(id int auto_increment primary key,name varchar(50) not null,budget int not null check(budget>10000));
+
+
+   -   Employee_Projects Table:  
+     - `employee_id`: INT, Foreign Key References `Employees(id)`
+     - `project_id`: INT, Foreign Key References `Projects(id)`
+     - Primary Key (`employee_id`, `project_id`)
+
+
+Create table employee_projects(employee_id int,foreign key(employee_id) references employees(id),project_id int,foreign key(project_id) references projects(id),primary key(employee_id,project_id));
+
+
+   -   Attendance Table:  
+     - `id`: INT, Primary Key, Auto Increment
+     - `employee_id`: INT, Foreign Key References `Employees(id)`
+     - `date`: DATE, Not Null
+     - `status`: ENUM('Present', 'Absent', 'On Leave')
+
+
+Create table attendance(id int auto_increment primary key,
+employee_id int,foreign key(employee_id) references employees(id),date date not null,
+status enum('present','absent','on leave'));
+
+
+
+3.   Insert Sample Data:  
+   - Insert data into `Departments`, `Employees`, `Projects`, `Employee_Projects`, and `Attendance` tables.
+
+insert into departments values(1001,"hr");
+insert into departments values(1002,"it");
+insert into departments values(1003,"sales");
+insert into departments values(1004,"marketing");
+insert into departments values(1005,"accounting");
+
+
+insert into employees values(101,"madhu",21,"female",60000,1002);
+insert into employees values(102,"anu",23,"female",70000,1001);
+insert into employees values(103,"bhargav",27,"male",65000,1003);
+insert into employees values(104,"chandru",24,"male",90000,1005);
+insert into employees values(105,"dharani",21,"female",34000,1004);
+insert into employees values(106,"emmi",25,"female",55000,1002);
+insert into employees values(107,"fahad",23,"male",77000,1001);
+insert into employees values(108,"gayathri",29,"female",33000,1003);
+insert into employees values(109,"hari",29,"male",45000,1005);
+insert into employees values(110,"ishu",21,"female",39000,1004);
+
+
+insert into projects (id,name, budget) values
+(2001,'Website Redesign', 15000),
+(2002,'Mobile App Development', 25000),
+(2003,'AI Research Project', 50000),
+(2004,'Marketing Campaign', 20000),
+(2005,'Customer Analytics Dashboard', 18000),
+(2006,'E-commerce Platform Upgrade', 30000),
+(2007,'Product Launch Event', 17000);
+
+
+insert into employee_projects (employee_id,project_id) values(101,2007),
+(102,2006),(103,2005),(104,2004),(105,2003),(106,2002),(107,2001),(108,2001),(109,2002),
+(110,2003);
+
+insert into attendance (employee_id, date, status) values
+(101, '2025-01-02', 'present'),
+(102, '2025-01-02', 'absent'),
+(103, '2025-01-02', 'on leave'),
+(104, '2025-01-02', 'absent'),
+(105, '2025-01-02', 'present'),
+(106, '2025-01-02', 'present'),
+(107, '2025-01-02', 'on leave'),
+(108, '2025-01-02', 'absent'),
+(109, '2025-01-02', 'present'),
+(110, '2025-01-02', 'present'),
+(101, '2025-01-03', 'absent'),
+(102, '2025-01-03', 'absent'),
+(103, '2025-01-03', 'present'),
+(104, '2025-01-03', 'absent'),
+(105, '2025-01-03', 'absent'),
+(106, '2025-01-03', 'on leave'),
+(107, '2025-01-03', 'present'),
+(108, '2025-01-03', 'present'),
+(109, '2025-01-03', 'absent'),
+(110, '2025-01-03', 'present');
+
+
+
+
+
+4.   Queries:  
+   - Retrieve all employees.
+
+
+Select * from employees;
+   - Retrieve all employees in the 'IT' department.
+
+
+Select * from employees as e join departments as d on e.department_id=d.id where d.name="it";
+
+
+   - List all projects with a budget greater than 50000.
+
+select * from projects where budget>50000;
+
+
+   - Show the names of employees and the projects they are working on.
+
+select e.name as employee_name,p.name as project_name from employees e join employee_projects ep on
+ e.id=ep.employee_id join projects p on p.id=ep.project_id;
+
+
+   - Count the number of employees in each department.
+
+
+select d.id,d.name,count(e.id) from departments d join employees e on d.id=e.department_id group by d.name,d.id; 
+
+   - Find employees with a salary greater than 50000.
+
+select * from employees where salary>50000;
+
+   - Get attendance records for a specific employee.
+
+select * from attendance where employee_id=101;
+
+5.   Update Records:  
+   - Increase the salary of employees in the 'HR' department by 10%.
+
+
+update employees e join departments d on e.department_id=d.id
+set e.salary=(e.salary*10/100)+e.salary where d.name="hr";
+
+
+   - Change the department of an employee.
+
+update employees e join departments d on e.department_id=d.id set e.department_id=1001 where e.id=110;
+
+6.   Delete Records:  
+   - Remove an employee who has resigned.
+
+delete from employees where id=109;
+
+   - Delete a project that is completed.
+
+delete from projects where id=2004;
+
+7.   Constraints and Modifications:  
+   - Add a unique constraint to the `email` column in `Employees` table.
+
+alter table employees add email varchar(100) unique;
+
+   - Ensure `age` is always greater than 18.
+
+alter table employees modify age int not null check(age>18);
+
+   - Add a default value 'Unknown' to `gender` if not specified.
+
+alter table employees modify gender varchar(10) not null default "Unknown";
+
