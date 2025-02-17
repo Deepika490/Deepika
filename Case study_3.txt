@@ -1,0 +1,84 @@
+
+Case Study 3: Student Management System
+
+      Scenario:      
+Create a database to manage students, their courses, and grades.
+
+      Tasks:      
+1.       Create the Database:      
+   - Name the database `StudentDB`.
+
+Create database studentdb;
+
+2.       Create Tables:      
+   -       Students Table:      
+     - `id`: INT, Primary Key, Auto Increment
+     - `name`: VARCHAR(50), Not Null
+     - `age`: INT, Not Null
+     - `email`: VARCHAR(50), Not Null, Unique
+
+
+Create table students(id int auto_increment primary key,name varchar(50)
+ not null,age int not null,email varchar(50) not null unique)auto_increment=101;
+
+
+   -       Courses Table:      
+     - `id`: INT, Primary Key, Auto Increment
+     - `name`: VARCHAR(50), Not Null
+
+
+Create table courses(id int auto_increment primary key,name varchar(50) not null)auto_increment=1001;
+
+   -       Enrollments Table:      
+     - `student_id`: INT, Foreign Key References `Students(id)`
+     - `course_id`: INT, Foreign Key References `Courses(id)`
+     - `grade`: CHAR(1)
+     - Primary Key (`student_id`, `course_id`)
+
+
+Create table enrollments(student_id int,course_id int,grade char(1),foreign key(student_id) references students(id),foreign key(course_id) references courses(id),primary key(student_id,course_id));
+
+3.       Insert Sample Data.      
+INSERT INTO students (name, age, email) VALUES 
+('Aarav', 20, 'aarav.sharma@example.com'),
+('Ananya', 22, 'ananya.verma@example.com'),
+('Aryan', 19, 'aryan.mehta@example.com'),
+('Diya', 21, 'diya.patel@example.com'),
+('Isha', 23, 'isha.reddy@example.com'),
+('Kavya', 20, 'kavya.nair@example.com'),
+('Lakshman', 22, 'lakshman.gupta@example.com'),
+('Niki', 21, 'niki.rao@example.com'),
+('Riya', 20, 'riya.choudhary@example.com'),
+('Yash', 24, 'yash.thakur@example.com');
+
+
+INSERT INTO courses (name) VALUES
+('Physics'),
+('Chemistry'),
+('Biology'),
+('Computer Science');
+
+
+INSERT INTO enrollments (student_id, course_id, grade) VALUES (101, 1001, 'A'), (102, 1002, 'B'), (103, 1003, 'C'), (104, 1004, 'A'), (105, 1001, 'B'), (106, 1002, 'A'), (107, 1003, 'C'), (108, 1004, 'B'), (109, 1001, 'A'), (110, 1002, 'C');
+
+
+4.       Queries:      
+   - List all students.
+
+Select * from from students;
+
+    -List all courses.
+
+Select * from courses;
+
+   - Show the names of students and the courses they are enrolled in.
+
+
+Select s.name,c.name from enrollments en join students s on en.student_id=s.id join courses c on en.course_id=c.id;
+
+
+   - Count the number of students in each course.
+
+Select course_id,count(student_id) as no_of_students from enrollments group by course_id;
+Select c.name as course_name,count(en.student_id) as no_of_students from
+ enrollments en join courses c on en.course_id=c.id group by c.name ;
